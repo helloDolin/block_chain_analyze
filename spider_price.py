@@ -44,8 +44,11 @@ TOKENS = [
     'MDS',
 ]
 
-# 全局数组，保存抓取 token 信息
-RESULT = []
+# token 信息数组容器
+TokenInfo_Results = []
+
+# excel 位置
+Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/out.xlsx'
 
 
 def getPriceInfo():
@@ -71,7 +74,7 @@ def getPriceInfo():
             dic = {'tokenName': obj, 'usdtPrice': data['data'][obj]['quote']['USD']['price'],
                    'rank': data['data'][obj]['cmc_rank'], 'marketCap': data['data'][obj]['quote']['USD']['market_cap']}
             print(dic)
-            RESULT.append(dic)
+            TokenInfo_Results.append(dic)
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)
@@ -138,9 +141,9 @@ def getFearAndGreedIndex():
 
 def write2Excel():
     ''' 写入 excel '''
-    workBook = load_workbook('/Users/dolin999/Desktop/out.xlsx')
+    workBook = load_workbook(Excel_Position)
     workSheet = workBook['record']
-    for i, obj in enumerate(RESULT):
+    for i, obj in enumerate(TokenInfo_Results):
         usdtPrice = obj['usdtPrice']
         rank = obj['rank']
         marketCap = obj['marketCap']
@@ -166,7 +169,7 @@ def write2Excel():
     # 火币usdt价格
     workSheet['K5'] = getHuobiUSDTPrice()
 
-    workBook.save('/Users/dolin999/Desktop/out.xlsx')
+    workBook.save(Excel_Position)
 
 
 def main():
