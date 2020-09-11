@@ -19,36 +19,29 @@ TOKENS = [
     'BCH',
     'LTC',
     'EOS',
-    'BNB',
     'ADA',
     'XLM',
-    'TRX',
     'ETC',
-    'HT',
-    'NEO',
-    'MIOTA',
-    'ZEC',
+    'BNB',
     'OKB',
+    'HT',
+    'ZEC',
+    'NEO',
     'QTUM',
-    'DX',
-    'ELF',
-    'WICC',
     'GXC',
-    'PAI',
-    'CTXC',
+    'ELF',
+    'MIOTA',
+    'WICC',
     'STORJ',
-    'CMT',
-    'MFT',
-    'RUFF',
-    'TNB',
     'MDS',
+    'PAI',
 ]
 
 # token 信息数组容器
 TokenInfo_Results = []
 
 # excel 位置
-Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/out.xlsx'
+Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/block_chain_analyze.xlsx'
 
 
 def getPriceInfo():
@@ -124,9 +117,9 @@ def getFearAndGreedIndex():
         # 默认绿色，在恐惧的时候显示绿色
         color = '3cb371'
 
-        if name == 'Fear':
+        if name == 'Fear' or name == 'Extreme Fear':
             name = '恐惧'
-        elif name == 'Greed':
+        elif name == 'Greed' or name == 'Extreme Greed':
             name = '贪婪'
             color = 'CC0000'
 
@@ -148,26 +141,32 @@ def write2Excel():
         rank = obj['rank']
         marketCap = obj['marketCap']
 
-        workSheet['F{}'.format(i + 3)] = float(usdtPrice)
-        workSheet['I{}'.format(i + 3)] = float(rank)
-        workSheet['J{}'.format(i + 3)] = float(marketCap)
+        workSheet['F{}'.format(i + 4)] = float(usdtPrice)
+        workSheet['I{}'.format(i + 4)] = float(rank)
+        workSheet['J{}'.format(i + 4)] = float(marketCap)
 
     # 恐惧贪婪 cell 填写
     fearGreedDic = getFearAndGreedIndex()
     print(fearGreedDic)
     name = fearGreedDic['name']
     value = fearGreedDic['value']
+    time = fearGreedDic['time']
     cellColor = fearGreedDic['color']
-    fearGreedCell = workSheet['A1']
+    fearGreedCell = workSheet['A2']
+    timeCell = workSheet['A1']
+
     fearGreedCell.fill = PatternFill(
         start_color=cellColor, end_color=cellColor, fill_type="solid")
+    timeCell.fill = PatternFill(
+        start_color=cellColor, end_color=cellColor, fill_type="solid")
     fearGreedCell.value = "{0} : {1}".format(name, value)
+    timeCell.value = time
 
     # 美元价格
-    workSheet['K3'] = str(getUSDRate())
+    workSheet['K4'] = str(getUSDRate())
 
     # 火币usdt价格
-    workSheet['K5'] = getHuobiUSDTPrice()
+    workSheet['K6'] = getHuobiUSDTPrice()
 
     workBook.save(Excel_Position)
 
