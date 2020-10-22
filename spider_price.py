@@ -35,6 +35,7 @@ TOKENS = [
     'STORJ',
     'MDS',
     'PAI',
+    'FIL'
 ]
 
 # token 信息数组容器
@@ -48,7 +49,7 @@ def getPriceInfo():
     ''' 获取 token 价格 '''
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     parameters = {
-        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX',
+        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
     }
     headers = {
         'Accepts': 'application/json',
