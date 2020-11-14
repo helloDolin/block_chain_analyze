@@ -91,6 +91,22 @@ def getUSDRate():
         return usdPrice
 
 
+def getBtcCoast():
+    ''' 获取 BTC 挖矿成本 '''
+    # 新浪财经
+    url = 'https://www.trinsicoin.com/'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'}
+    res = requests.get(url, headers=headers, verify=False)
+    res_status = res.status_code
+    if res_status == 200:
+        selector = etree.HTML(res.text)
+        arr = selector.xpath('//*[@id="home"]/div[2]/div/div/h1/strong/text()')
+        btcCoast = arr[0]
+        print('btc 挖矿成本' + btcCoast)
+        return btcCoast
+
+
 def getHuobiUSDTPrice():
     ''' 获取火币USDT买入价格 '''
     url = 'https://otc-api.eiijo.cn/v1/data/trade-market?country=37&currency=1&payMethod=0&currPage=1&coinId=2&tradeType=sell&blockType=general&online=1'
@@ -168,6 +184,8 @@ def write2Excel():
 
     # 火币usdt价格
     workSheet['K6'] = getHuobiUSDTPrice()
+
+    workSheet['K2'] = getBtcCoast()
 
     workBook.save(Excel_Position)
 
