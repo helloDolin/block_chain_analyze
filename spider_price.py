@@ -5,6 +5,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill
 import json
 import time
+import datetime
 from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from model import Modelfromdict, ModelElement
@@ -43,101 +44,103 @@ TOKENS = [
 Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/block_chain_analyze.xlsx'
 
 
-def getUSDRate():
+def http_get(url):
+    ''' http get req '''
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'}
+    res = requests.get(url, headers=headers, verify=False)
+    res_status = res.status_code
+    if res_status == 200:
+        return res
+
+
+def get_usdt_rate():
     ''' 获取美元汇率 '''
     # 新浪财经
     url = 'https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=96683251_hao_pg&wd=%E7%BE%8E%E5%85%83%E6%B1%87%E7%8E%87&oq=%25E7%25BE%258E%25E5%2585%2583%25E6%25B1%2587%25E7%258E%2587%2520python%2520%25E6%258E%25A5%25E5%258F%25A3&rsv_pq=849622a40002b0a2&rsv_t=3c97aODwSAtR9tXCNOIUwwMxmD4KkKOIKMP6XkUfkYHX16WZ8o7ql3pF8Jp2OEcOzsEROyMy&rqlang=cn&rsv_enter=1&inputT=564&rsv_sug3=19&rsv_sug1=10&rsv_sug7=100&rsv_sug2=0&rsv_sug4=815&rsv_sug=2'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'}
-    res = requests.get(url, headers=headers, verify=False)
-    res_status = res.status_code
-    if res_status == 200:
-        selector = etree.HTML(res.text)
-        arr = selector.xpath(
-            '//*[@id="2"]/div[1]/div[1]/div[1]/div[1]/span[1]/text()')
-        usdPrice = arr[0]
-        print('美元价格' + usdPrice)
-        return usdPrice
+    res = http_get(url)
+    selector = etree.HTML(res.text)
+    arr = selector.xpath(
+        '//*[@id="2"]/div[1]/div[1]/div[1]/div[1]/span[1]/text()')
+    usdPrice = arr[0]
+    print('美元价格' + usdPrice)
+    return usdPrice
 
 
-def getBtcCoast():
+def get_btc_coast():
     ''' 获取 BTC 挖矿成本 '''
     # 新浪财经
     url = 'https://www.trinsicoin.com/'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1'}
-    res = requests.get(url, headers=headers, verify=False)
-    res_status = res.status_code
-    if res_status == 200:
-        selector = etree.HTML(res.text)
-        arr = selector.xpath('//*[@id="home"]/div[2]/div/div/h1/strong/text()')
-        btcCoast = arr[0]
-        print('btc 挖矿成本' + btcCoast)
-        return btcCoast
+    res = http_get(url)
+    selector = etree.HTML(res.text)
+    arr = selector.xpath('//*[@id="home"]/div[2]/div/div/h1/strong/text()')
+    btcCoast = arr[0]
+    print('btc 挖矿成本' + btcCoast)
+    return btcCoast
 
 
-def getHuobiUSDTPrice():
+def get_huobi_usdt_price():
     ''' 获取火币USDT买入价格 '''
     url = 'https://otc-api.eiijo.cn/v1/data/trade-market?country=37&currency=1&payMethod=0&currPage=1&coinId=2&tradeType=sell&blockType=general&online=1'
-    res = requests.get(url, verify=False)
-    res_status = res.status_code
-    if res_status == 200:
-        # 将json转为python对象
-        obj = json.loads(res.text)
-        huobiUsdtPrice = obj['data'][0]['price']
-        print('USDT价格' + str(huobiUsdtPrice))
-        return huobiUsdtPrice
+    res = http_get(url)
+    obj = json.loads(res.text)
+    huobiUsdtPrice = obj['data'][0]['price']
+    print('USDT价格' + str(huobiUsdtPrice))
+    return huobiUsdtPrice
 
 
-def getFearAndGreedIndex():
+def get_fear_greed_index():
     ''' 获取恐惧贪婪指数对象 '''
     url = 'https://api.alternative.me/fng/'
-    res = requests.get(url, verify=False)
-    res_status = res.status_code
-    if res_status == 200:
-        resData = json.loads(res.text)
-        resData = resData['data'][0]
+    res = http_get(url)
 
-        name = resData['value_classification']
-        value = resData['value']
-        # 默认绿色，在恐惧的时候显示绿色
-        color = '3cb371'
+    resData = json.loads(res.text)
+    resData = resData['data'][0]
 
-        if name == 'Fear' or name == 'Extreme Fear':
-            name = '恐惧'
-        elif name == 'Greed' or name == 'Extreme Greed':
-            name = '贪婪'
-            color = 'CC0000'
+    name = resData['value_classification']
+    value = resData['value']
+    # 默认绿色，在恐惧的时候显示绿色
+    color = '3cb371'
 
-        currentTime = int(resData['timestamp'])
-        timeArray = time.localtime(currentTime)
-        formatTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    if name == 'Fear' or name == 'Extreme Fear':
+        name = '恐惧'
+    elif name == 'Greed' or name == 'Extreme Greed':
+        name = '贪婪'
+        color = 'CC0000'
 
-        dic = {'name': name, 'value': value,
-               'time': formatTime, 'color': color}
-        return dic
+    currentTime = int(resData['timestamp'])
+    timeArray = time.localtime(currentTime)
+    formatTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+    dic = {'name': name, 'value': value,
+           'time': formatTime, 'color': color}
+    return dic
 
 
-def write2Excel():
+def write_2_excel():
     ''' 写入 excel '''
     final_data = get_final_data()
     print(final_data)
+
     workBook = load_workbook(Excel_Position)
     workSheet = workBook['record']
 
+    # 价格、排名、市值等写入
     for i in range(len(final_data)):
         obj = final_data[i]
         workSheet['A{}'.format(i + 4)] = obj.tokenName
         workSheet['B{}'.format(i + 4)] = obj.rank
-        workSheet['C{}'.format(i + 4)] = obj.lowestDate18_19
+        workSheet['C{}'.format(
+            i + 4)] = datetime.datetime.strptime(obj.lowestDate18_19, '%Y/%m/%d')
         workSheet['D{}'.format(i + 4)] = obj.lowestPrice18_19
-        workSheet['E{}'.format(i + 4)] = obj.lowestDate18_20
+        workSheet['E{}'.format(
+            i + 4)] = datetime.datetime.strptime(obj.lowestDate18_20, '%Y/%m/%d')
         workSheet['F{}'.format(i + 4)] = obj.lowestPrice18_20
         workSheet['G{}'.format(i + 4)] = obj.usdtPrice
         workSheet['J{}'.format(i + 4)] = obj.marketCap
 
-    # 恐惧贪婪 cell 填写
-    fearGreedDic = getFearAndGreedIndex()
+    # 恐惧贪婪 cell 写入
+    fearGreedDic = get_fear_greed_index()
     print(fearGreedDic)
     name = fearGreedDic['name']
     value = fearGreedDic['value']
@@ -153,13 +156,14 @@ def write2Excel():
     fearGreedCell.value = "{0} : {1}".format(name, value)
     timeCell.value = time
 
-    # 美元价格
-    workSheet['K4'] = str(getUSDRate())
+    # 美元价格写入
+    workSheet['K4'] = str(get_usdt_rate())
 
-    # 火币usdt价格
-    workSheet['K6'] = getHuobiUSDTPrice()
+    # 火币 USDT 价格 写入
+    workSheet['K6'] = get_huobi_usdt_price()
 
-    workSheet['K2'] = getBtcCoast()
+    # BTC 挖矿成本写入
+    workSheet['K2'] = get_btc_coast()
 
     workBook.save(Excel_Position)
 
@@ -221,7 +225,7 @@ def get_final_data():
 
 
 def main():
-    write2Excel()
+    write_2_excel()
 
 
 if __name__ == '__main__':
