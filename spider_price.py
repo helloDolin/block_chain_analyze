@@ -7,6 +7,7 @@ import json
 import time
 from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+from model import Modelfromdict, ModelElement
 
 # API 地址+文档：https://pro.coinmarketcap.com/account
 
@@ -38,40 +39,8 @@ TOKENS = [
     'FIL'
 ]
 
-# token 信息数组容器
-TokenInfo_Results = []
-
 # excel 位置
 Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/block_chain_analyze.xlsx'
-
-
-def getPriceInfo():
-    ''' 获取 token 价格 '''
-    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-    parameters = {
-        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
-    }
-    headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': 'af108ddb-cc3a-429e-b408-087dc8a71a11',
-    }
-
-    session = Session()
-    session.headers.update(headers)
-
-    try:
-        response = session.get(url, params=parameters)
-        print(response.text)
-        data = json.loads(response.text)
-
-        for obj in TOKENS:
-            dic = {'tokenName': obj, 'usdtPrice': data['data'][obj]['quote']['USD']['price'],
-                   'rank': data['data'][obj]['cmc_rank'], 'marketCap': data['data'][obj]['quote']['USD']['market_cap']}
-            print(dic)
-            TokenInfo_Results.append(dic)
-
-    except (ConnectionError, Timeout, TooManyRedirects) as e:
-        print(e)
 
 
 def getUSDRate():
@@ -151,16 +120,21 @@ def getFearAndGreedIndex():
 
 def write2Excel():
     ''' 写入 excel '''
+    final_data = get_final_data()
+    print(final_data)
     workBook = load_workbook(Excel_Position)
     workSheet = workBook['record']
-    for i, obj in enumerate(TokenInfo_Results):
-        usdtPrice = obj['usdtPrice']
-        rank = obj['rank']
-        marketCap = obj['marketCap']
 
-        workSheet['F{}'.format(i + 4)] = float(usdtPrice)
-        workSheet['I{}'.format(i + 4)] = float(rank)
-        workSheet['J{}'.format(i + 4)] = float(marketCap)
+    for i in range(len(final_data)):
+        obj = final_data[i]
+        workSheet['A{}'.format(i + 4)] = obj.tokenName
+        workSheet['B{}'.format(i + 4)] = obj.rank
+        workSheet['C{}'.format(i + 4)] = obj.lowestDate18_19
+        workSheet['D{}'.format(i + 4)] = obj.lowestPrice18_19
+        workSheet['E{}'.format(i + 4)] = obj.lowestDate18_20
+        workSheet['F{}'.format(i + 4)] = obj.lowestPrice18_20
+        workSheet['G{}'.format(i + 4)] = obj.usdtPrice
+        workSheet['J{}'.format(i + 4)] = obj.marketCap
 
     # 恐惧贪婪 cell 填写
     fearGreedDic = getFearAndGreedIndex()
@@ -190,8 +164,63 @@ def write2Excel():
     workBook.save(Excel_Position)
 
 
+def read_net_data():
+    ''' 获取 token 价格 '''
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+
+    parameters = {
+        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
+    }
+
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': 'af108ddb-cc3a-429e-b408-087dc8a71a11',
+    }
+
+    session = Session()
+    session.headers.update(headers)
+
+    result = []
+    try:
+        response = session.get(url, params=parameters)
+        # print(response.text)
+        data = json.loads(response.text)
+
+        for obj in TOKENS:
+            dic = {'tokenName': obj, 'usdtPrice': data['data'][obj]['quote']['USD']['price'],
+                   'rank': data['data'][obj]['cmc_rank'], 'marketCap': data['data'][obj]['quote']['USD']['market_cap']}
+            result.append(dic)
+        return result
+
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        print(e)
+
+
+def read_local_data():
+    ''' 读取本地数据 '''
+    with open("data.json") as json_file:
+        data = json.load(json_file)
+    return data
+
+
+def get_final_data():
+    ''' 获取合并本地和远程的数据 '''
+    netData = read_net_data()
+    lodcalData = read_local_data()
+    result = []
+    for net_dic in netData:
+        for local_dic in lodcalData:
+            if net_dic["tokenName"] == local_dic["tokenName"]:
+                local_dic["usdtPrice"] = net_dic["usdtPrice"]
+                local_dic["rank"] = net_dic["rank"]
+                local_dic["marketCap"] = net_dic["marketCap"]
+                result.append(local_dic)
+
+    list_data = Modelfromdict(result)
+    return sorted(list_data, key=lambda x: x.rank)
+
+
 def main():
-    getPriceInfo()
     write2Excel()
 
 
