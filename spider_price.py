@@ -9,6 +9,8 @@ import datetime
 from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from model import Modelfromdict, ModelElement
+import threading
+
 
 # API 地址+文档：https://pro.coinmarketcap.com/account
 
@@ -43,6 +45,12 @@ TOKENS = [
 # excel 位置
 Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/block_chain_analyze.xlsx'
 
+# 变量
+usdt_rate = None
+btc_coast = None
+huobi_usdt_price = None
+fear_greed_index = None
+final_data = None
 
 def http_get(url):
     ''' http get req '''
@@ -64,6 +72,8 @@ def get_usdt_rate():
         '//*[@id="2"]/div[1]/div[1]/div[1]/div[1]/span[1]/text()')
     usdPrice = arr[0]
     print('美元价格' + usdPrice)
+    global usdt_rate
+    usdt_rate = usdPrice
     return usdPrice
 
 
@@ -76,6 +86,8 @@ def get_btc_coast():
     arr = selector.xpath('//*[@id="home"]/div[2]/div/div/h1/strong/text()')
     btcCoast = arr[0]
     print('btc 挖矿成本' + btcCoast)
+    global btc_coast
+    btc_coast = btcCoast
     return btcCoast
 
 
@@ -86,6 +98,8 @@ def get_huobi_usdt_price():
     obj = json.loads(res.text)
     huobiUsdtPrice = obj['data'][0]['price']
     print('USDT价格' + str(huobiUsdtPrice))
+    global huobi_usdt_price
+    huobi_usdt_price = huobiUsdtPrice
     return huobiUsdtPrice
 
 
@@ -114,6 +128,8 @@ def get_fear_greed_index():
 
     dic = {'name': name, 'value': value,
            'time': formatTime, 'color': color}
+    global fear_greed_index      
+    fear_greed_index = value
     return dic
 
 
@@ -168,13 +184,15 @@ def write_2_excel():
     workBook.save(Excel_Position)
 
 
-def read_net_data():
+def read_net_data(tokens=None):
     ''' 获取 token 价格 '''
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
 
     parameters = {
         'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
     }
+    if tokens is not None :
+        parameters = tokens
 
     headers = {
         'Accepts': 'application/json',
@@ -194,23 +212,24 @@ def read_net_data():
             dic = {'tokenName': obj, 'usdtPrice': data['data'][obj]['quote']['USD']['price'],
                    'rank': data['data'][obj]['cmc_rank'], 'marketCap': data['data'][obj]['quote']['USD']['market_cap']}
             result.append(dic)
+        print(result)
         return result
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)
 
 
-def read_local_data():
+def read_local_data(tokens=None):
     ''' 读取本地数据 '''
     with open("data.json") as json_file:
         data = json.load(json_file)
     return data
 
 
-def get_final_data():
+def get_final_data(tokens=None):
     ''' 获取合并本地和远程的数据 '''
-    netData = read_net_data()
-    lodcalData = read_local_data()
+    netData = read_net_data(tokens=tokens)
+    lodcalData = read_local_data(tokens=tokens)
     result = []
     for net_dic in netData:
         for local_dic in lodcalData:
@@ -221,8 +240,41 @@ def get_final_data():
                 result.append(local_dic)
 
     list_data = Modelfromdict(result)
-    return sorted(list_data, key=lambda x: x.rank)
+    result = sorted(list_data, key=lambda x: x.rank)
+    global final_data
+    final_data = result
+    return result
 
+def format_response_data(req=None):
+    tokes_base_info_thread = threading.Thread(target=get_final_data, args=(req,))
+    fear_greed_index_thread = threading.Thread(target=get_fear_greed_index)
+    huobi_usdt_price_thread = threading.Thread(target=get_huobi_usdt_price)
+    btc_coast_thread = threading.Thread(target=get_btc_coast)
+    usdt_rate_thread = threading.Thread(target=get_usdt_rate)
+
+    tokes_base_info_thread.start()
+    fear_greed_index_thread.start()
+    huobi_usdt_price_thread.start()
+    btc_coast_thread.start()
+    usdt_rate_thread.start()
+
+    tokes_base_info_thread.join()
+    fear_greed_index_thread.join()
+    huobi_usdt_price_thread.join()
+    btc_coast_thread.join()
+    usdt_rate_thread.join()
+
+    data = {
+        'tokensInfo': final_data,
+        'attachData':{
+            'fear_greed_index':fear_greed_index,
+            'huobi_usdt_price':huobi_usdt_price,
+            'btc_coast':btc_coast,
+            'usdt_rate':usdt_rate
+            }
+    }
+    print(data)
+    return data
 
 def main():
     write_2_excel()
