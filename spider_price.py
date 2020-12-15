@@ -43,7 +43,7 @@ TOKENS = [
 ]
 
 # excel 位置
-Excel_Position = '/Users/dolin999/Desktop/block_chain_analyze/block_chain_analyze.xlsx'
+Excel_Position = 'block_chain_analyze.xlsx'
 
 # 变量
 usdt_rate = None
