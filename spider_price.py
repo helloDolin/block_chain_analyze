@@ -52,6 +52,7 @@ huobi_usdt_price = None
 fear_greed_index = None
 final_data = None
 
+
 def http_get(url):
     ''' http get req '''
     headers = {
@@ -128,7 +129,7 @@ def get_fear_greed_index():
 
     dic = {'name': name, 'value': value,
            'time': formatTime, 'color': color}
-    global fear_greed_index      
+    global fear_greed_index
     fear_greed_index = value
     return dic
 
@@ -191,7 +192,7 @@ def read_net_data(tokens=None):
     parameters = {
         'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
     }
-    if tokens is not None :
+    if tokens is not None:
         parameters = tokens
 
     headers = {
@@ -245,8 +246,10 @@ def get_final_data(tokens=None):
     final_data = result
     return result
 
+
 def format_response_data(req=None):
-    tokes_base_info_thread = threading.Thread(target=get_final_data, args=(req,))
+    tokes_base_info_thread = threading.Thread(
+        target=get_final_data, args=(req,))
     fear_greed_index_thread = threading.Thread(target=get_fear_greed_index)
     huobi_usdt_price_thread = threading.Thread(target=get_huobi_usdt_price)
     btc_coast_thread = threading.Thread(target=get_btc_coast)
@@ -266,15 +269,16 @@ def format_response_data(req=None):
 
     data = {
         'tokensInfo': final_data,
-        'attachData':{
-            'fear_greed_index':fear_greed_index,
-            'huobi_usdt_price':huobi_usdt_price,
-            'btc_coast':btc_coast,
-            'usdt_rate':usdt_rate
-            }
+        'attachData': {
+            'fear_greed_index': fear_greed_index,
+            'huobi_usdt_price': huobi_usdt_price,
+            'btc_coast': btc_coast,
+            'usdt_rate': usdt_rate
+        }
     }
     print(data)
     return data
+
 
 def main():
     write_2_excel()
