@@ -136,8 +136,7 @@ def get_fear_greed_index():
 
 def write_2_excel():
     ''' 写入 excel '''
-    final_data = get_final_data()
-    print(final_data)
+    get_final_data()
 
     workBook = load_workbook(Excel_Position)
     workSheet = workBook['record']
@@ -213,7 +212,7 @@ def read_net_data(tokens=None):
             dic = {'tokenName': obj, 'usdtPrice': data['data'][obj]['quote']['USD']['price'],
                    'rank': data['data'][obj]['cmc_rank'], 'marketCap': data['data'][obj]['quote']['USD']['market_cap']}
             result.append(dic)
-        print(result)
+
         return result
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
@@ -231,6 +230,7 @@ def get_final_data(tokens=None):
     ''' 获取合并本地和远程的数据 '''
     netData = read_net_data(tokens=tokens)
     lodcalData = read_local_data(tokens=tokens)
+
     result = []
     for net_dic in netData:
         for local_dic in lodcalData:
@@ -240,8 +240,14 @@ def get_final_data(tokens=None):
                 local_dic["marketCap"] = net_dic["marketCap"]
                 result.append(local_dic)
 
+    print('😀😀😀 ============== merge data（json 格式） ============== 😀😀😀')
+    print(json.dumps(result))
+
     list_data = Modelfromdict(result)
-    result = sorted(list_data, key=lambda x: x.rank)
+    print('😀😀😀 ============== list_data ============== 😀😀😀')
+    print(list_data)
+
+    result = sorted(list_data, key=lambda x: x.marketCap)
     global final_data
     final_data = result
     return result
