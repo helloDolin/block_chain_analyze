@@ -15,7 +15,7 @@ import threading
 # API 地址+文档：https://pro.coinmarketcap.com/account
 
 
-# 与excel表中顺序对应,与 接口 parameters 对应（顺序不对应）
+# 与 接口 parameters 对应（顺序不对应）
 TOKENS = [
     'BTC',
     'ETH',
@@ -25,7 +25,6 @@ TOKENS = [
     'EOS',
     'ADA',
     'XLM',
-    'ETC',
     'BNB',
     'OKB',
     'HT',
@@ -80,7 +79,6 @@ def get_usdt_rate():
 
 def get_btc_coast():
     ''' 获取 BTC 挖矿成本 '''
-    # 新浪财经
     url = 'https://www.trinsicoin.com/'
     res = http_get(url)
     selector = etree.HTML(res.text)
@@ -189,7 +187,7 @@ def read_net_data(tokens=None):
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
 
     parameters = {
-        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,ETC,TRX,FIL',
+        'symbol': 'BTC,ETH,XRP,BCH,LTC,EOS,BNB,ADA,XLM,NEO,MIOTA,ZEC,QTUM,HT,GXC,PAI,STORJ,CTXC,CMT,TNB,MFT,DX,DACC,RUFF,MDS,ELF,WICC,OKB,TRX,FIL',
     }
     if tokens is not None:
         parameters = tokens
@@ -205,7 +203,8 @@ def read_net_data(tokens=None):
     result = []
     try:
         response = session.get(url, params=parameters)
-        # print(response.text)
+        print('😀😀😀 ============== response.text ============== 😀😀😀')
+        print(response.text)
         data = json.loads(response.text)
 
         for obj in TOKENS:
@@ -247,7 +246,7 @@ def get_final_data(tokens=None):
     print('😀😀😀 ============== list_data ============== 😀😀😀')
     print(list_data)
 
-    result = sorted(list_data, key=lambda x: x.marketCap)
+    result = sorted(list_data, key=lambda x: x.rank)
     global final_data
     final_data = result
     return result
