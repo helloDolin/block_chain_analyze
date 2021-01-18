@@ -2,102 +2,126 @@
     {
         "tokenName": "BTC",
         "rank": 1,
-        "lowestDate_18_19": "2018/12/15",
-        "lowestPrice_18_19": 3155.00,
-        "lowestDate_18_20": "2019/1/29",
-        "lowestPrice_18_20": 3353.00,
+        "lowestDate_18": "2018/12/15",
+        "lowestPrice_18": 3155.00,
+        "lowestDate_19": "2019/1/29",
+        "lowestPrice_19": 3353.00,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 3800.00,
         "usdtPrice": 18000.00,
         "marketCap": 342103521361.31067
     },
     {
         "tokenName": "ETH",
-        "lowestDate_18_19": "2018/12/13",
-        "lowestPrice_18_19": 81.93,
-        "lowestDate_18_20": "2019/1/28",
-        "lowestPrice_18_20": 101.03
+        "lowestDate_18": "2018/12/13",
+        "lowestPrice_18": 81.93,
+        "lowestDate_19": "2019/1/28",
+        "lowestPrice_19": 101.03,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 87.00
     },
     {
         "tokenName": "XRP",
-        "lowestDate_18_19": "2018/8/14",
-        "lowestPrice_18_19": 0.246,
-        "lowestDate_18_20": "2019/12/18",
-        "lowestPrice_18_20": 0.175
+        "lowestDate_18": "2018/8/14",
+        "lowestPrice_18": 0.246,
+        "lowestDate_19": "2019/12/18",
+        "lowestPrice_19": 0.175,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 0.10110
     },
     {
         "tokenName": "BCH",
-        "lowestDate_18_19": "2018/12/15",
-        "lowestPrice_18_19": 74.15,
-        "lowestDate_18_20": "2019/1/28",
-        "lowestPrice_18_20": 101.06
+        "lowestDate_18": "2018/12/15",
+        "lowestPrice_18": 74.15,
+        "lowestDate_19": "2019/1/28",
+        "lowestPrice_19": 101.06,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 129.00
     },
     {
         "tokenName": "LTC",
-        "lowestDate_18_19": "2018/12/14",
-        "lowestPrice_18_19": 23.53,
-        "lowestDate_18_20": "2019/1/13",
-        "lowestPrice_18_20": 29.2
+        "lowestDate_18": "2018/12/14",
+        "lowestPrice_18": 23.53,
+        "lowestDate_19": "2019/1/13",
+        "lowestPrice_19": 29.2,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 23.85
     },
     {
         "tokenName": "EOS",
-        "lowestDate_18_19": "2018/12/7",
-        "lowestPrice_18_19": 1.527,
-        "lowestDate_18_20": "2019/12/17",
-        "lowestPrice_18_20": 2.1481
+        "lowestDate_18": "2018/12/7",
+        "lowestPrice_18": 1.527,
+        "lowestDate_19": "2019/12/17",
+        "lowestPrice_19": 2.1481,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 1.3904
     },
     {
         "tokenName": "ADA",
-        "lowestDate_18_19": "2018/12/7",
-        "lowestPrice_18_19": 0.027,
-        "lowestDate_18_20": "2019/12/18",
-        "lowestPrice_18_20": 0.0303
+        "lowestDate_18": "2018/12/7",
+        "lowestPrice_18": 0.027,
+        "lowestDate_19": "2019/12/18",
+        "lowestPrice_19": 0.0303,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 0.01745
     },
     {
         "tokenName": "XLM",
-        "lowestDate_18_19": "2019/2/8",
-        "lowestPrice_18_19": 0.0726,
-        "lowestDate_18_20": "2019/12/17",
-        "lowestPrice_18_20": 0.04213
+        "lowestDate_18": "2019/2/8",
+        "lowestPrice_18": 0.0726,
+        "lowestDate_19": "2019/12/17",
+        "lowestPrice_19": 0.04213,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 0.026016
     },
     {
         "tokenName": "BNB",
-        "lowestDate_18_19": "2018/12/8",
-        "lowestPrice_18_19": 4.2,
-        "lowestDate_18_20": "2019/1/13",
-        "lowestPrice_18_20": 5.37
+        "lowestDate_18": "2018/12/8",
+        "lowestPrice_18": 4.2,
+        "lowestDate_19": "2019/1/13",
+        "lowestPrice_19": 5.37,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 6.38
     },
     {
         "tokenName": "OKB",
-        "lowestDate_18_19": "2019/1/15",
-        "lowestPrice_18_19": 0.58,
-        "lowestDate_18_20": "2019/1/15",
-        "lowestPrice_18_20": 0.58
+        "lowestDate_18": "2018/12/7",
+        "lowestPrice_18": 0.623,
+        "lowestDate_19": "2019/1/13",
+        "lowestPrice_19": 0.57,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 2
     },
     {
         "tokenName": "HT",
-        "lowestDate_18_19": "2019/1/30",
-        "lowestPrice_18_19": 0.88,
-        "lowestDate_18_20": "2019/1/30",
-        "lowestPrice_18_20": 0.88
+        "lowestDate_18": "2018/12/8",
+        "lowestPrice_18": 1.03,
+        "lowestDate_19": "2019/1/30",
+        "lowestPrice_19": 0.88,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 1.8361
     },
     {
         "tokenName": "ZEC",
-        "lowestDate_18_19": "2019/2/9",
-        "lowestPrice_18_19": 45.3,
-        "lowestDate_18_20": "2019/11/25",
-        "lowestPrice_18_20": 25.12
+        "lowestDate_18": "2019/2/9",
+        "lowestPrice_18": 45.3,
+        "lowestDate_19": "2019/11/25",
+        "lowestPrice_19": 25.12,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 17.00
     },
     {
         "tokenName": "NEO",
-        "lowestDate_18_19": "2018/12/7",
-        "lowestPrice_18_19": 5.42,
-        "lowestDate_18_20": "2019/9/24",
-        "lowestPrice_18_20": 6.37
+        "lowestDate_18": "2018/12/7",
+        "lowestPrice_18": 5.42,
+        "lowestDate_19": "2019/9/24",
+        "lowestPrice_19": 6.37,
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 3.75
     },
     {
         "tokenName": "FIL",
-        "lowestDate_18_19": "2020/10/24",
-        "lowestPrice_18_19": 20.92,
-        "lowestDate_18_20": "2020/10/24",
-        "lowestPrice_18_20": 20.92
+        "lowestDate_20": "2020/3/13",
+        "lowestPrice_20": 20
     }
 ]

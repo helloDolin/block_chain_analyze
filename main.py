@@ -143,15 +143,29 @@ def write_2_excel():
     for i in range(len(final_data)):
         obj = final_data[i]
         workSheet['A{}'.format(i + 4)] = obj.tokenName
+
         workSheet['B{}'.format(i + 4)] = obj.rank
-        workSheet['C{}'.format(
-            i + 4)] = datetime.datetime.strptime(obj.lowestDate18_19, '%Y/%m/%d')
-        workSheet['D{}'.format(i + 4)] = obj.lowestPrice18_19
-        workSheet['E{}'.format(
-            i + 4)] = datetime.datetime.strptime(obj.lowestDate18_20, '%Y/%m/%d')
-        workSheet['F{}'.format(i + 4)] = obj.lowestPrice18_20
-        workSheet['G{}'.format(i + 4)] = obj.usdtPrice
-        workSheet['J{}'.format(i + 4)] = obj.marketCap
+
+        if obj.lowestDate18 != None:
+            workSheet['C{}'.format(
+                i + 4)] = datetime.datetime.strptime(obj.lowestDate18, '%Y/%m/%d')
+        if obj.lowestPrice18 != None:
+            workSheet['D{}'.format(i + 4)] = obj.lowestPrice18
+
+        if obj.lowestDate19 != None:
+            workSheet['E{}'.format(
+                i + 4)] = datetime.datetime.strptime(obj.lowestDate19, '%Y/%m/%d')
+        if obj.lowestPrice19 != None:
+            workSheet['F{}'.format(i + 4)] = obj.lowestPrice19
+
+        if obj.lowestDate20 != None:
+            workSheet['G{}'.format(
+                i + 4)] = datetime.datetime.strptime(obj.lowestDate20, '%Y/%m/%d')
+        if obj.lowestPrice20 != None:
+            workSheet['H{}'.format(i + 4)] = obj.lowestPrice20
+
+        workSheet['I{}'.format(i + 4)] = obj.usdtPrice
+        workSheet['M{}'.format(i + 4)] = obj.marketCap
 
     # 恐惧贪婪 cell 写入
     fearGreedDic = get_fear_greed_index()
@@ -171,13 +185,13 @@ def write_2_excel():
     timeCell.value = time
 
     # 美元价格写入
-    workSheet['K4'] = str(get_usdt_rate())
+    workSheet['N4'] = str(get_usdt_rate())
 
     # 火币 USDT 价格 写入
-    workSheet['K6'] = get_huobi_usdt_price()
+    workSheet['N6'] = get_huobi_usdt_price()
 
     # BTC 挖矿成本写入
-    workSheet['K2'] = get_btc_coast()
+    workSheet['N2'] = get_btc_coast()
 
     workBook.save(Excel_Position)
 
