@@ -1,5 +1,5 @@
 import flask
-from spider_price import format_response_data
+from main import format_response_data
 # import ast
 # from flask_cors import CORS
 
