@@ -133,7 +133,6 @@ def get_fear_greed_index():
     fear_greed_index = value
     return dic
 
-
 def write_2_excel():
     ''' 写入 excel '''
     get_final_data()
@@ -151,20 +150,35 @@ def write_2_excel():
         if obj.lowestDate18 != None:
             workSheet['C{}'.format(
                 i + 4)] = datetime.datetime.strptime(obj.lowestDate18, '%Y/%m/%d')
+        else:
+            workSheet['C{}'.format(i + 4)] = ''
+
         if obj.lowestPrice18 != None:
             workSheet['D{}'.format(i + 4)] = obj.lowestPrice18
+        else:
+            workSheet['D{}'.format(i + 4)] = ''
 
         if obj.lowestDate19 != None:
             workSheet['E{}'.format(
                 i + 4)] = datetime.datetime.strptime(obj.lowestDate19, '%Y/%m/%d')
+        else:
+            workSheet['E{}'.format(i + 4)] = ''
+
         if obj.lowestPrice19 != None:
             workSheet['F{}'.format(i + 4)] = obj.lowestPrice19
+        else:
+            workSheet['F{}'.format(i + 4)] = ''
 
         if obj.lowestDate20 != None:
             workSheet['G{}'.format(
                 i + 4)] = datetime.datetime.strptime(obj.lowestDate20, '%Y/%m/%d')
+        else:
+            workSheet['G{}'.format(i + 4)] = ''
+
         if obj.lowestPrice20 != None:
             workSheet['H{}'.format(i + 4)] = obj.lowestPrice20
+        else:
+            workSheet['H{}'.format(i + 4)] = ''
 
         workSheet['I{}'.format(i + 4)] = obj.usdtPrice
         workSheet['M{}'.format(i + 4)] = obj.marketCap
